@@ -1,0 +1,99 @@
+# Learn detailed information about the fields of an extension.yaml file in the docs:
+# https://firebase.google.com/docs/extensions/reference/extension-yaml
+
+# Identifier for your extension
+# TODO: Replace this with an descriptive name for your extension.
+name: fire-paystack  
+version: 0.0.1  # Follow semver versioning
+specVersion: v1beta  # Version of the Firebase Extensions specification
+
+# Friendly display name for your extension (~3-5 words)
+displayName: Process payments with Paystack
+
+# Author details
+author:
+  authorName: Jason Brown
+  url: https://jaebrown.com
+
+# Brief description of the task your extension performs (~1 sentence)
+description: >-
+  Seamlessly process payments with Paystack based on the contents of a simple Firestore document written to specific collection.
+
+license: Apache-2.0  # https://spdx.org/licenses/
+
+# Public URL for the source code of your extension.
+# TODO:  Replace this with your GitHub repo.
+sourceUrl: https://github.com/jaebrownn/paystack-firebase-extension
+
+# Specify whether a paid-tier billing plan is required to use your extension.
+# Learn more in the docs: https://firebase.google.com/docs/extensions/reference/extension-yaml#billing-required-field
+billingRequired: true
+
+# In an `apis` field, list any Google APIs (like Cloud Translation, BigQuery, etc.)
+# required for your extension to operate.
+# Learn more in the docs:
+# https://firebase.google.com/docs/extensions/reference/extension-yaml#apis-field
+apis:
+  - apiName: secretmanager.googleapis.com
+    reason: For creating secrets for API keys issued by Paystack
+  - apiName: firestore.googleapis.com
+    reason: For reading and writing to Firestore
+
+# In a `roles` field, list any IAM access roles required for your extension to operate.
+# Learn more in the docs:
+# https://firebase.google.com/docs/extensions/reference/extension-yaml#roles-field
+roles:
+  - role: datastore.user
+    reason: Allows the extension to read and write to Firestore.
+
+# In the `resources` field, list each of your extension's functions, including the trigger for each function.
+# Learn more in the docs:
+# https://firebase.google.com/docs/extensions/reference/extension-yaml#resources-field
+resources:
+  - name: paymentCreated
+    type: firebaseextensions.v1beta.function
+    properties:
+      eventTrigger:
+        eventType: providers/cloud.firestore/eventTypes/document.create
+        resource: projects/${PROJECT_ID}/databases/(default)/documents/payments/{paymentID}
+  - name: handlePayment
+    type: firebaseextensions.v1beta.function
+    properties:
+      runtime: nodejs16
+      httpsTrigger: {}
+
+
+# In the `params` field, set up your extension's user-configured parameters.
+# Learn more in the docs:
+# https://firebase.google.com/docs/extensions/reference/extension-yaml#params-field
+params:
+  - param: PAYSTACK_API_KEY
+    label: Paystack API Key
+    description: >-
+      The API Key issued by paystack, which can be found at https://dashboard.paystack.com/#/settings/developers. For development projects, use the "test" key and for production projects
+      use the "live" key
+    type: secret
+    required: true
+    immutable: false
+  - param: DEFAULT_CURRENCY
+    label: Default currency
+    description: >-
+      What is the default currency you would like to process transactions in? Currently only ZAR supported
+    type: string
+    required: true
+    immutable: false
+    default: ZAR
+    validationRegex: "ZAR"
+    validationErrorMessage:
+      Currently, only ZAR is supported
+  - param: PAYMENTS_COLLECTION
+    label: Payment documents collection
+    description: >-
+      What is the path to the collection that contains the documents used to initialize and track payments?
+    type: string
+    required: true
+    immutable: false
+    default: payments
+    validationRegex: "^[a-zA-Z0-9_-]{0,100}$"
+    validationErrorMessage:
+      Currently, only ZAR is supported
