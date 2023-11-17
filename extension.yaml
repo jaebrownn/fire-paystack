@@ -4,7 +4,7 @@
 # Identifier for your extension
 # TODO: Replace this with an descriptive name for your extension.
 name: fire-paystack  
-version: 0.0.1  # Follow semver versioning
+version: 0.0.2  # Follow semver versioning
 specVersion: v1beta  # Version of the Firebase Extensions specification
 
 # Friendly display name for your extension (~3-5 words)
@@ -64,6 +64,7 @@ resources:
 
 
 # In the `params` field, set up your extension's user-configured parameters.
+# These parameters can be accessed as envrionment variables in our functions.
 # Learn more in the docs:
 # https://firebase.google.com/docs/extensions/reference/extension-yaml#params-field
 params:
