@@ -7,3 +7,7 @@
 
 ## Version 0.0.3
 - More touch ups to documentation
+
+
+## Version 0.0.4
+- Demo version for Google DevFest
